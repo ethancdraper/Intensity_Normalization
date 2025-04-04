@@ -12,6 +12,7 @@ The following protocol outlines each step of this analysis: https://www.protocol
 
 Installation
   Install FSL: https://fsl.fmrib.ox.ac.uk/fsl/docs/#/install/index 
+  Install R: https://rstudio-education.github.io/hopr/starting.html
   Install HypperMapp3r: https://hypermapp3r.readthedocs.io/en/latest/install.html
     - Note HypperMapp3r was built on an older version of python, so in 2025 on the Cedar cluster of Compute Canada, I had to:
     1. pip install -e ".[hypermapper_gpu]"
