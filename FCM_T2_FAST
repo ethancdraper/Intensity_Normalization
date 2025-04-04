@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#SBATCH --mem=98G
+#SBATCH --time=10:00:00
+
+module load fsl/6.0.7.7
+
+ses_list="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T2_proc/ses_list_T2_FLAIR"
+core_path="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T2_proc"
+
+while read -r SES; do
+	    echo "Processing session: ${SES}"
+	fast -t 1 "$core_path/ses-${SES}/anat/sub-032633_ses-${SES}_run-1_T2w_fcm_brain.nii.gz" 
+	
+	echo "FAST FCM_BRAIN has been run for ${SES}"
+done < "$ses_list"
+echo "five more subjects are done"
