@@ -1,0 +1,10 @@
+#!/bin/bash
+
+ses_list="/Users/ethandraper/Desktop/MSc_Thesis/SIMON_BIDS/sub-032633/ses_list"
+core_path="/Users/ethandraper/Desktop/MSc_Thesis/SIMON_BIDS/sub-032633"
+
+while read -r SES; do
+	fsl_anat -i "$core_path/$SES/anat/sub-032633_${SES}_run-1_T1w.nii.gz"
+	echo "fsl_anat and bias correction has been run for {$SES}"
+done < "$ses_list"
+echo "fsl_anat has been run for all"
