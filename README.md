@@ -3,6 +3,7 @@
 Comparing automated intensity normalizationtechniques for white matter hyperintensity quantification
 
 Authors: Ethan C. Draper & Udunna C. Anazodo
+
 Montreal Neurological Institute, McGill University
 
 Please see the references file and ensure all tools, data, and previous work are appropriately credited.
