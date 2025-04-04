@@ -1,6 +1,6 @@
 # Intensity_Normalization
 
-Comparing automated intensity normalizationtechniques for white matter hyperintensity quantification
+Comparing automated intensity normalization techniques for white matter hyperintensity quantification
 
 Authors: Ethan C. Draper & Udunna C. Anazodo
 
