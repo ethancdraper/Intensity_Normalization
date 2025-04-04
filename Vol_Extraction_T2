@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#SBATCH --mem=98G
+#SBATCH --time=1:00:00
+module load fsl/6.0.7.7
+
+OUTPUT_FILE="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T2_proc/Vol_Results.csv"
+ses_list="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T2_proc/ses_list_T2_FLAIR"
+core_path="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T2_proc"
+
+echo "Session,Method,Global WM Volume, Global GM Volume, WM Min, WM Max" > $OUTPUT_FILE
+
+while read SES; do
+
+	CORE="${core_path}/ses-${SES}/anat"
+	WM="${CORE}/sub-032633_ses-${SES}_run-1_FLAIR.anat/T2_biascorr_brain_pve_1.nii.gz"
+	GM="${CORE}/sub-032633_ses-${SES}_run-1_FLAIR.anat/T2_biascorr_brain_pve_0.nii.gz"
+	WM_FCM="${CORE}t/sub-032633_ses-${SES}_run-1_T2w_fcm_brain_pve_1.nii.gz"
+	GM_FCM="${CORE}/sub-032633_ses-${SES}_run-1_T2w_fcm_brain_pve_0.nii.gz"
+  WM_KDE="${CORE}/sub-032633_ses-${SES}_run-1_T2w_kde_brain_pve_1.nii.gz"
+  GM_KDE="${CORE}/sub-032633_ses-${SES}_run-1_T2w_kde_brain_pve_0.nii.gz"
+
+	echo "${SES},BC,$(fslstats ${WM} -V | awk '{print $2}'), $(fslstats ${GM} -V |  awk '{print $2}'), $(fslstats ${CORE}/sub-032633_ses-${SES}_run-1_FLAIR.anat/T2_biascorr_brain.nii.gz -k ${WM} -r)" >> $OUTPUT_FILE
+
+	echo "${SES},FCM,$(fslstats ${WM_FCM} -V | awk '{print $2}'), $(fslstats ${GM_FCM} -V |  awk '{print $2}'), $(fslstats ${CORE}/sub-032633_ses-${SES}_run-1_T2w_fcm_brain.nii.gz  -k ${WM_FCM} -r)" >> $OUTPUT_FILE
+
+	echo "${SES},KDE,$(fslstats ${WM_KDE} -V | awk '{print $2}'), $(fslstats ${GM_KDE} -V |  awk '{print $2}'), $(fslstats ${CORE}/sub-032633_ses-${SES}_run-1_T2w_kde_brain.nii.gz -k ${WM_KDE} -r)" >> $OUTPUT_FILE
+
+done < "$ses_list"
+
+echo "White matter volume, grey matter volume, white matter min intensity, and white matter max intensity saved to $OUTPUT_FILE"
