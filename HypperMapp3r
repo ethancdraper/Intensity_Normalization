@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#SBATCH --mem=150G
+#SBATCH --time=15:00:00
+
+ses_list="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T2_proc/ses_list_hyp_d2"
+
+while read -r SES; do
+
+core_path="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633"
+T1="$core_path/T1_proc/ses-${SES}/anat/sub-032633_ses-${SES}_run-1_T1w.anat/T1_biascorr_brain.nii.gz"
+FLAIR="$core_path/T2_proc/ses-${SES}/anat/sub-032633_ses-${SES}_run-1_FLAIR.anat/T2_reg_T1.nii.gz"
+MASK="$core_path/T1_proc/ses-${SES}/anat/sub-032633_ses-${SES}_run-1_T1w.anat/T1_biascorr_brain_mask.nii.gz"
+OUTPUT="$core_path/T2_proc/ses-${SES}/anat/sub-032633_ses-${SES}_run-1_FLAIR.anat/${SES}brain_wmh"
+
+module load apptainer
+
+	apptainer exec hypermapper.sif hypermapper seg_wmh -t1 "$T1" -fl "$FLAIR" -m "$MASK" -o "$OUTPUT"
+	
+	echo "HypperMapp3r has been run for BC ${SES}"
+
+done < "$ses_list"
+echo "Participants in ses_list have been run hyppermapp3r"
