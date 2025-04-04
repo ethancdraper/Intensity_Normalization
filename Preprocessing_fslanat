@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#SBATCH --mem=98G
+#SBATCH --time=20:00:00
+
+module load fsl/6.0.7.7
+
+ses_list="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T2_proc/ses_list_T2_FLAIR_edit"
+core_path="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T2_proc"
+
+while read SES; do
+    echo "Processing session: $SES"
+
+    session_path="${core_path}/ses-${SES}/anat"
+
+    fsl_anat --noreg --nononlinreg --nosubcortseg --betfparam=0.5 -t T2 -i "${session_path}/sub-032633_ses-${SES}_run-1_FLAIR.nii.gz"
+
+    echo "fsl_anat has been run WITHOUT registration, nonlinear registration, subcortical segmentation, and with brain extraction (f=0.5)"
+
+done < "$ses_list"
+
+echo "fsl_anat has been run for all T2"
