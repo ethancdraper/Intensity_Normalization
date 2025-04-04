@@ -1,0 +1,17 @@
+Anderson, J., Jenkinson, M. & Smith, S. Non-Linear Registration Aka Spatial Normalisation. (2007).
+Bezdek, J. C., Ehrlich, R. & Full, W. FCM: The fuzzy c-means clustering algorithm. Comput. Geosci. 10, 191–203 (1984).
+Carré, A. et al. Standardization of brain MR images across machines and protocols: bridging the gap for MRI-based radiomics. Sci. Rep. 10, 12340 (2020).
+Duchesne, S. et al. Structural and functional multi-platform MRI series of a single human volunteer over more than fifteen years. Sci. Data 6, 245 (2019).
+Duchesne, S. et al. The Canadian dementia imaging protocol: Harmonizing national cohorts. J. Magn. Reson. Imaging 49, 456–465 (2019).
+Jenkinson, M. & Smith, S. A global optimisation method for robust affine registration of brain images. Med. Image Anal. 5, 143–156 (2001).
+Jenkinson, M., Bannister, P., Brady, M. & Smith, S. Improved optimization for the robust and accurate linear registration and motion correction of brain images. NeuroImage 17, 825–841 (2002).
+Kuijf, H. et al. Data of the white matter hyperintensity (WMH) segmentation challenge. DataverseNL https://doi.org/10.34894/AECRSD (2022).
+Nyúl, L. G. & Udupa, J. K. On standardizing the MR image intensity scale. Magn. Reson. Med. 42, 1072–1081 (1999).
+Petersen, R. C. et al. Alzheimer’s Disease Neuroimaging Initiative (ADNI). Neurology 74, 201–209 (2010).
+Reinhold, J. C., Dewey, B. E., Carass, A. & Prince, J. L. Evaluating the impact of intensity normalization on MR image synthesis. Proc. SPIE-- Int. Soc. Opt. Eng. 10949, 109493H (2019).
+Salome, P. et al. MR Intensity Normalization Methods Impact Sequence Specific Radiomics Prognostic Model Performance in Primary and Recurrent High-Grade Glioma. Cancers 15, 965 (2023).
+Shah, M. et al. Evaluating intensity normalization on MRIs of human brain with multiple sclerosis. Med. Image Anal. 15, 267–282 (2011).
+Shinohara, R. T. et al. Statistical normalization techniques for magnetic resonance imaging. NeuroImage Clin. 6, 9–19 (2014).
+Smith, S. M. Fast robust automated brain extraction. Hum. Brain Mapp. 17, 143–155 (2002).
+Smith, S. M. et al. Advances in functional and structural MR image analysis and implementation as FSL. NeuroImage 23, S208–S219 (2004).
+Wagner, R. Assessing the neurological sequelae of COVID-19 and acute respiratory distress syndrome. (Western University, 2023).
