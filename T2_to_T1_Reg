@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#SBATCH --mem=28G
+#SBATCH --time=15:00:00
+
+module load fsl/6.0.7.7
+
+core_path="/path/to/data"
+sub_list="$core_path/sub_list"
+
+while read -r ID; do
+	echo "Processing session: ${ID}"
+
+	F_2="$core_path/${ID}/T2/T2_cropped.anat/T2_fcm_brain.nii.gz"
+	F_O="$core_path/${ID}/T2/T2_cropped.anat/FCM_T2_reg_T1.nii.gz"
+	F_1="$core_path/${ID}/T1/T1_fcm_brain.nii.gz"
+	F_OM="$core_path/${ID}/T2/T2_cropped.anat/FCM_T2_reg_T1.omat"
+
+	flirt -in "$F_2" -ref "$F_1" -out "$F_O" -omat "$F_OM" -dof 6
+	echo "Flirt has been run for T2 to T1 on FCM_Brain ${ID}"
+
+        K_2="$core_path/${ID}/T2/T2_cropped.anat/T2_kde_brain.nii.gz"
+        K_O="$core_path/${ID}/T2/T2_cropped.anat/KDE_T2_reg_T1.nii.gz"
+        K_1="$core_path/${ID}/T1/T1_kde_brain.nii.gz"
+        K_OM="$core_path/${ID}/T2/T2_cropped.anat/KDE_T2_reg_T1.omat"
+
+        flirt -in "$K_2" -ref "$K_1" -out "$K_O" -omat "$K_OM" -dof 6
+	echo "Flirt has been run for T2 to T1 on KDE_Brain ${ID}"
+
+        W_2="$core_path/${ID}/T2/T2_cropped.anat/T2_ws_brain.nii.gz"
+        W_O="$core_path/${ID}/T2/T2_cropped.anat/WS_T2_reg_T1.nii.gz"
+        W_1="$core_path/${ID}/T1/T1_ws_brain.nii.gz"
+        W_OM="$core_path/${ID}/T2/T2_cropped.anat/WS_T2_reg_T1.omat"
+
+        flirt -in "$W_2" -ref "$W_1" -out "$W_O" -omat "$W_OM" -dof 6
+	echo "Flirt has been run for T2 to T1 on WS_Brain ${ID}"
+
+        Z_2="$core_path/${ID}/T2/T2_cropped.anat/T2_zs_brain.nii.gz"
+        Z_O="$core_path/${ID}/T2/T2_cropped.anat/ZS_T2_reg_T1.nii.gz"
+        Z_1="$core_path/${ID}/T1/T1_zs_brain.nii.gz"
+        Z_OM="$core_path/${ID}/T2/T2_cropped.anat/ZS_T2_reg_T1.omat"
+
+	flirt -in "$Z_2" -ref "$Z_1" -out "$Z_O" -omat "$Z_OM" -dof 6
+	echo "Flirt has been run for T2 to T1 on ZS_Brain ${ID}"
+
+	U2="$core_path/${ID}/T2/T2_cropped.anat/T2_biascorr_brain.nii.gz"
+	UO="$core_path/${ID}/T2/T2_cropped.anat/T2_reg_T1.nii.gz"
+	U1="$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain.nii.gz"
+	UOM="$core_path/${ID}/T2/T2_cropped.anat/T2_reg_T1.omat"
+
+	flirt -in "$U2" -ref "$U1" -out "$UO" -omat "$UOM" -dof 6
+	echo "Flirt has been run for T2 to T1 on UC_Brain ${ID}"
+
+done < "$sub_list"
+echo "Flirt has been run, all T2 data has been registered to T1 data"
