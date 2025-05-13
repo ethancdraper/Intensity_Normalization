@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#SBATCH --mem=12G
+#SBATCH --time=2:00:00
+
+core_path="/path/to/data"
+sub_list="$core_path/CN_list"
+
+while read -r ID; do
+	echo "Processing session: ${ID}"
+	fcm-normalize "$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain.nii.gz" -m "$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain_mask.nii.gz" -o "$core_path/${ID}/T1/T1_fcm_brain.nii.gz" -v -mo t1
+	echo "FCM has been run for ${ID}"
+	kde-normalize "$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain.nii.gz" -m "$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain_mask.nii.gz" -o "$core_path/${ID}/T1/T1_kde_brain.nii.gz" -v -mo t1
+	echo "KDE has been run for ${ID}"
+	ws-normalize "$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain.nii.gz" -m "$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain_mask.nii.gz" -o "$core_path/${ID}/T1/T1_ws_brain.nii.gz" -v -mo t1
+	echo "WS has been run for ${ID}"
+	zscore-normalize "$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain.nii.gz" -m "$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain_mask.nii.gz" -o "$core_path/${ID}/T1/T1_zs_brain.nii.gz" -v -mo t1
+	echo "ZS has been run for ${ID}"
+
+done < "$sub_list"
+echo "Intensity normalization has been performed for all participants in $sub_list"
