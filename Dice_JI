@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#SBATCH --mem=4G
+#SBATCH --time=2:00:00
+
+module load freesurfer/7.4.1
+source $EBROOTFREESURFER/FreeSurferEnv.sh
+
+core_path="/path/to/data"
+sub_list="${core_path}/sub_list"
+
+while read -r ID; do
+
+  GT_WMH="${core_path}/${ID}/wmh.nii.gz"
+	FCM="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_FCM.nii.gz"
+
+	mri_seg_overlap "$GT_WMH" "$FCM"
+	mri_seg_overlap --measures jaccard "$GT_WMH" "$FCM"
+
+	KDE="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_KDE.nii.gz"
+
+	mri_seg_overlap "$GT_WMH" "$KDE"
+	mri_seg_overlap --measures jaccard "$GT_WMH" "$KDE"
+
+	WS="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_WS.nii.gz"
+
+	mri_seg_overlap "$GT_WMH" "$WS"
+	mri_seg_overlap --measures jaccard "$GT_WMH" "$WS"
+
+	ZS="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_ZS.nii.gz"
+
+	mri_seg_overlap "$GT_WMH" "$ZS"
+	mri_seg_overlap --measures jaccard "$GT_WMH" "$ZS"
+
+	UC="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_UC.nii.gz"
+
+	mri_seg_overlap "$GT_WMH" "$UC"
+	mri_seg_overlap --measures jaccard "$GT_WMH" "$UC"
+
+	echo "WMH UC Dice and JI has been extracted for ${ID}"
+done < "$sub_list"
+
+echo "Dice and JI have been run for all participants"
