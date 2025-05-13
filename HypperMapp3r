@@ -1,23 +1,58 @@
 #!/bin/bash
 
-#SBATCH --mem=150G
-#SBATCH --time=15:00:00
+#SBATCH --mem=28G
+#SBATCH --time=23:59:59
 
-ses_list="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T2_proc/ses_list_hyp_d2"
+module load fsl/6.0.7.7
 
-while read -r SES; do
+core_path="/path/to/data"
+sub_list="$core_path/sub_list"
 
-core_path="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633"
-T1="$core_path/T1_proc/ses-${SES}/anat/sub-032633_ses-${SES}_run-1_T1w.anat/T1_biascorr_brain.nii.gz"
-FLAIR="$core_path/T2_proc/ses-${SES}/anat/sub-032633_ses-${SES}_run-1_FLAIR.anat/T2_reg_T1.nii.gz"
-MASK="$core_path/T1_proc/ses-${SES}/anat/sub-032633_ses-${SES}_run-1_T1w.anat/T1_biascorr_brain_mask.nii.gz"
-OUTPUT="$core_path/T2_proc/ses-${SES}/anat/sub-032633_ses-${SES}_run-1_FLAIR.anat/${SES}brain_wmh"
+while read -r ID; do
 
-module load apptainer
+	module load apptainer
 
-	apptainer exec hypermapper.sif hypermapper seg_wmh -t1 "$T1" -fl "$FLAIR" -m "$MASK" -o "$OUTPUT"
-	
-	echo "HypperMapp3r has been run for BC ${SES}"
+	echo "Processing session: ${ID}"
 
-done < "$ses_list"
-echo "Participants in ses_list have been run hyppermapp3r"
+	F1="$core_path/${ID}/T1/T1_fcm_brain.nii.gz"
+	F2="$core_path/${ID}/T2/T2_cropped.anat/FCM_T2_reg_T1.nii.gz"
+	FM="$core_path/${ID}/T1/T1_fcm_mask.nii.gz"
+	FO="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_FCM.nii.gz"
+
+	apptainer exec hypermapper.sif hypermapper seg_wmh -t1 "$F1" -fl "$F2" -m "$FM" -o "$FO"
+	echo "HypperMapp3r has been run for FCM ${ID}"
+
+	K1="$core_path/${ID}/T1/T1_kde_brain.nii.gz"
+	K2="$core_path/${ID}/T2/T2_cropped.anat/KDE_T2_reg_T1.nii.gz"
+	KM="$core_path/${ID}/T1/T1_kde_mask.nii.gz"
+	KO="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_KDE.nii.gz"
+
+	apptainer exec hypermapper.sif hypermapper seg_wmh -t1 "$K1" -fl "$K2" -m "$KM" -o "$KO"
+	echo "HypperMapp3r has been run for KDE ${ID}"
+
+	W1="$core_path/${ID}/T1/T1_ws_brain.nii.gz"
+	W2="$core_path/${ID}/T2/T2_cropped.anat/WS_T2_reg_T1.nii.gz"
+	WM="$core_path/${ID}/T1/T1_ws_mask.nii.gz"
+	WO="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_WS.nii.gz"
+
+	apptainer exec hypermapper.sif hypermapper seg_wmh -t1 "$W1" -fl "$W2" -m "$WM" -o "$WO"
+	echo "HypperMapp3r has been run for WS ${ID}"
+
+	Z1="$core_path/${ID}/T1/T1_zs_brain.nii.gz"
+	Z2="$core_path/${ID}/T2/T2_cropped.anat/ZS_T2_reg_T1.nii.gz"
+	ZM="$core_path/${ID}/T1/T1_zs_mask.nii.gz"
+	ZO="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_ZS.nii.gz"
+
+	apptainer exec hypermapper.sif hypermapper seg_wmh -t1 "$Z1" -fl "$Z2" -m "$ZM" -o "$ZO"
+	echo "HypperMapp3r has been run for ZS ${ID}"
+
+	U1="$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain.nii.gz"
+	U2="$core_path/${ID}/T2/T2_cropped.anat/T2_reg_T1.nii.gz"
+	UM="$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain_mask.nii.gz"
+	UO="$core_path/${ID}/T2/T2_cropped.anat/${ID}_brain_WMH_UC.nii.gz"
+
+	apptainer exec hypermapper.sif hypermapper seg_wmh -t1 "$U1" -fl "$U2" -m "$UM" -o "$UO"
+	echo "HypperMapp3r has been run for UC ${ID}"
+
+done < "$sub_list"
+echo "HypperMapp3r has been run for all participants"
