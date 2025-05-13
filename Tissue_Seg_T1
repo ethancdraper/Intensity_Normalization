@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#SBATCH --mem=28G
+#SBATCH --time=20:00:00
+
+module load fsl/6.0.7.7
+
+core_path="/path/to/data"
+sub_list="${core_path}/sub_list"
+
+while read -r ID; do
+  echo "Processing session: ${ID}"
+	fast -t 1 "$core_path/${ID}/T1/T1_fcm_brain.nii.gz" 
+	echo "FAST FCM_BRAIN has been run for ${ID}"
+  fast -t 1 "$core_path/${ID}/T1/T1_kde_brain.nii.gz" 
+  echo "FAST KDE_BRAIN has been run for ${ID}"
+  fast -t 1 "$core_path/${ID}/T1/T1_ws_brain.nii.gz" 
+  echo "FAST WS_BRAIN has been run for ${ID}"
+  fast -t 1 "$core_path/${ID}/T1/T1_zs_brain.nii.gz" 
+  echo "FAST ZS_BRAIN has been run for ${ID}"
+
+done < "$sub_list"
+echo "FAST has been run for all 4 methods for all subjects"
