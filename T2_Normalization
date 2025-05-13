@@ -1,0 +1,32 @@
+#!/bin/bash
+
+#SBATCH --mem=4G
+#SBATCH --time=2:00:00
+
+core_path="/path/to/data"
+sub_list="$core_path/sub_list"
+
+while read -r ID; do
+	echo "Processing session: ${ID}"
+
+	input="$core_path/${ID}/T2/T2_cropped.anat/T2_biascorr_brain.nii.gz"
+	TM="${core_path}/${ID}/T2/T2_cropped.anat/T2_biascorr_brain_mask.nii.gz"
+	FCM="$core_path/${ID}/T2/T2_cropped.anat/T2_fcm_brain.nii.gz"
+	KDE="$core_path/${ID}/T2/T2_cropped.anat/T2_kde_brain.nii.gz"
+	WS="$core_path/${ID}/T2/T2_cropped.anat/T2_ws_brain.nii.gz"
+	ZS="$core_path/${ID}/T2/T2_cropped.anat/T2_zs_brain.nii.gz"
+
+	fcm-normalize "$input" -tm "$TM" -o "$FCM" -v -mo t2
+	echo "FCM has been run for ${ID}"
+
+	kde-normalize "$input" -m "$TM" -o "$KDE" -v -mo t2
+	echo "KDE has been run for brain ${ID}"
+
+	ws-normalize "$input" -m "$TM" -o "$WS" -v -mo t2
+	echo "KDE has been run for brain ${ID}"
+
+	zscore-normalize "$input" -m "$TM" -o "$ZS" -v -mo t2
+	echo "WS has been run for ${ID}"
+
+done < "$sub_list"
+echo "Intensity normalization has been performed for all participants in $sub_list"
