@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH --mem=12G
+#SBATCH --mem=4G
 #SBATCH --time=2:00:00
 
 core_path="/path/to/data"
-sub_list="$core_path/CN_list"
+sub_list="$core_path/sub_list"
 
 while read -r ID; do
 	echo "Processing session: ${ID}"
