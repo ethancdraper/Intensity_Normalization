@@ -1,31 +1,39 @@
 #!/bin/bash
 
-#SBATCH --mem=98G
+#SBATCH --mem=2G
 #SBATCH --time=1:00:00
+
 module load fsl/6.0.7.7
 
-OUTPUT_FILE="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T1_proc/Vol_Results.csv"
-ses_list="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T1_proc/ses_list"
-core_path="/home/ecdraper/scratch/ecdraper/SIMON/SIMON_BIDS/sub-032633/T1_proc"
+core_path="/path/to/data"
+sub_list="$core_path/sub_list"
+OUTPUT_FILE="$core_path/T1_Results"
+echo "ID,Method,WM_Volume,GM_Volume,WM_Min,WM_Max" > $OUTPUT_FILE
 
-echo "Session,Method,Global WM Volume, Global GM Volume, WM Min, WM Max" > $OUTPUT_FILE
+while read ID; do
 
-while read SES; do
+	WM="$core_path/${ID}/T1/T1_cropped.anat/T1_fast_pve_2.nii.gz"
+	GM="$core_path/${ID}/T1/T1_cropped.anat/T1_fast_pve_1.nii.gz"
+	B="$core_path/${ID}/T1/T1_cropped.anat/T1_biascorr_brain"
+	FCM="$core_path/${ID}/T1/T1_fcm_brain.nii.gz"
+	WM_FCM="$core_path/${ID}/T1/T1_fcm_brain_pve_2.nii.gz"
+	GM_FCM="$core_path/${ID}/T1/T1_fcm_brain_pve_1.nii.gz"
+	KDE="$core_path/${ID}/T1/T1_kde_brain.nii.gz"
+	WM_KDE="$core_path/${ID}/T1/T1_kde_brain_pve_2.nii.gz"
+ 	GM_KDE="$core_path/${ID}/T1/T1_kde_brain_pve_1.nii.gz"
+	WS="$core_path/${ID}/T1/T1_ws_brain.nii.gz"
+	WM_WS="$core_path/${ID}/T1/T1_ws_brain_pve_2.nii.gz"
+	GM_WS="$core_path/${ID}/T1/T1_ws_brain_pve_1.nii.gz"
+	ZS="$core_path/${ID}/T1/T1_zs_brain.nii.gz"
+	WM_ZS="$core_path/${ID}/T1/T1_zs_brain_pve_2.nii.gz"
+	GM_ZS="$core_path/${ID}/T1/T1_zs_brain_pve_1.nii.gz"
 
-  CORE="${core_path}/ses-${SES}/anat"
-	WM="${CORE}/sub-032633_ses-${SES}_run-1_T1w.anat/T1_biascorr_brain_pve_2.nii.gz"
-	GM="${CORE}/sub-032633_ses-${SES}_run-1_T1w.anat/T1_biascorr_brain_pve_1.nii.gz"
-	WM_FCM="${CORE}/sub-032633_ses-${SES}_run-1_T1w_fcm_brain_pve_2.nii.gz"
-	GM_FCM="${CORE}/sub-032633_ses-${SES}_run-1_T1w_fcm_brain_pve_1.nii.gz"
-  WM_KDE="${CORE}/sub-032633_ses-${SES}_run-1_T1w_kde_brain_pve_2.nii.gz"
-  GM_KDE="${CORE}/sub-032633_ses-${SES}_run-1_T1w_kde_brain_pve_1.nii.gz"
+	echo "${ID},UC,$(fslstats ${WM} -V | awk '{print $2}'), $(fslstats ${GM} -V |  awk '{print $2}'), $(fslstats ${B} -k ${WM} -r)" >> $OUTPUT_FILE
+	echo "${ID},FCM,$(fslstats ${WM_FCM} -V | awk '{print $2}'), $(fslstats ${GM_FCM} -V |  awk '{print $2}'), $(fslstats ${FCM} -k ${WM_FCM} -r)" >> $OUTPUT_FILE
+	echo "${ID},KDE,$(fslstats ${WM_KDE} -V | awk '{print $2}'), $(fslstats ${GM_KDE} -V |  awk '{print $2}'), $(fslstats ${KDE} -k ${WM_KDE} -r)" >> $OUTPUT_FILE
+	echo "${ID},WS,$(fslstats ${WM_WS} -V | awk '{print $2}'), $(fslstats ${GM_WS} -V |  awk '{print $2}'), $(fslstats ${WS} -k ${WM_WS} -r)" >> $OUTPUT_FILE
+	echo "${ID},ZS,$(fslstats ${WM_ZS} -V | awk '{print $2}'), $(fslstats ${GM_ZS} -V |  awk '{print $2}'), $(fslstats ${ZS} -k ${WM_ZS} -r)" >> $OUTPUT_FILE
 
-	echo "${SES},BC,$(fslstats ${WM} -V | awk '{print $2}'), $(fslstats ${GM} -V |  awk '{print $2}'), $(fslstats ${CORE}/sub-032633_ses-${SES}_run-1_T1w.anat/T1_biascorr_brain.nii.gz -k ${WM} -r)" >> $OUTPUT_FILE
-
-	echo "${SES},FCM,$(fslstats ${WM_FCM} -V | awk '{print $2}'), $(fslstats ${GM_FCM} -V |  awk '{print $2}'), $(fslstats ${CORE}/sub-032633_ses-${SES}_run-1_T1w_fcm_brain.nii.gz  -k ${WM_FCM} -r)" >> $OUTPUT_FILE
-
-	echo "${SES},KDE,$(fslstats ${WM_KDE} -V | awk '{print $2}'), $(fslstats ${GM_KDE} -V |  awk '{print $2}'), $(fslstats ${CORE}/sub-032633_ses-${SES}_run-1_T1w_kde_brain.nii.gz -k ${WM_KDE} -r)" >> $OUTPUT_FILE
-
-done < "$ses_list"
+done < "$sub_list"
 
 echo "White matter volume, grey matter volume, white matter min intensity, and white matter max intensity saved to $OUTPUT_FILE"
